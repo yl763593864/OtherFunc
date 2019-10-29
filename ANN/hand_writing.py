@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     train_data_list = []
     # 文件太大不能上传到git上, 放在OneDrive里面的
-    with open('mnist_train.csv') as fs:
+    with open('train.txt') as fs:
         train_data_list = fs.readlines()
 
     for record in train_data_list:
@@ -93,7 +93,7 @@ if __name__ == '__main__':
         n.train(inputs, targets, 1)
 
     test_data_list = []
-    with open('mnist_test.csv') as fs:
+    with open('test.txt') as fs:
         test_data_list = fs.readlines()
 
     correct_num = 0
