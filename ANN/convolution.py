@@ -71,7 +71,7 @@ class NeuralNetwork:
         ao3 = self.activation_func(zo3)
 
         total_error = (np.power(targets[0] - ao1, 2) + np.power(targets[1] - ao2, 2) + np.power(targets[2] - ao3, 2))/2
-        print(total_error)
+        print( total_error)
 
 
     def get_zf(self, inputs, f1, bias):
