@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/11/9 21:11
+# @Author  : tys
+# @Email   : yangsongtang@gmail.com
+# @File    : linear_regression_01.py
+# @Software: PyCharm
+
 from matplotlib import pyplot as plt
 from mxnet import autograd, nd
 import random
@@ -54,9 +61,8 @@ for epoch in range(num_epochs):
         l.backward()
         sgd([w, b], lr, batch_size)
 
-
     train_l = loss(net(features, w, b), labels)
     print('eopch %d, loss %f' % (epoch + 1, train_l.mean().asnumpy()))
-#
+
 print(true_w, w)
 print(true_b, b)

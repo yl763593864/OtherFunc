@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/11/9 21:12
+# @Author  : tys
+# @Email   : yangsongtang@gmail.com
+# @File    : linear_regression_02.py
+# @Software: PyCharm
+
+
 from mxnet import nd, autograd
 from mxnet.gluon import data as gdata
 from mxnet.gluon import nn
