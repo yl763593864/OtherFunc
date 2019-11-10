@@ -1,62 +1,73 @@
-from matplotlib import pyplot as plt
-from mxnet import autograd, nd
-import random
+from mxnet.gluon import data as gdata
+import sys
+import time
+import d2lzh as d2l
+from mxnet import nd, autograd
 
 
-num_inputs = 2
-num_examples = 1000
-true_w = [2, -3.4]
-true_b = 4.2
-features = nd.random.normal(scale=1, shape=(num_examples, num_inputs))
-labels = true_w[0] * features[:, 0] + true_w[1] * features[:, 1] + true_b
-labels += nd.random.normal(scale=0.01, shape=labels.shape)
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
 
-batch_size = 10
+num_inputs = 784
+num_outputs = 10
 
-
-def data_iter(batch_size, features, labels):
-    num_examples = len(features)
-    indices = list(range(num_examples))
-    random.shuffle(indices)
-    for i in range(0, num_examples, batch_size):
-        j = nd.array(indices[i: min(i + batch_size, num_examples)])
-        yield features.take(j), labels.take(j)
-
-
-def linreg(X, w, b):
-    return nd.dot(X, w) + b
-
-
-def squard_loss(y_hat, y):
-    return (y_hat - y.reshape(y_hat.shape)) ** 2 / 2
-
-
-def sgd(params, lr, batch_size):
-    for param in params:
-        param[:] = param - lr * param.grad / batch_size
-
-
-w = nd.random.normal(scale=0.01, shape=(num_inputs, 1))
-b = nd.zeros(shape=(1,))
-w.attach_grad()
+W = nd.random.normal(scale=0.01, shape=(num_inputs, num_outputs))
+b = nd.zeros(num_outputs)
+W.attach_grad()
 b.attach_grad()
 
-lr = 0.03
-num_epochs = 3
-net = linreg
-loss = squard_loss
 
-for epoch in range(num_epochs):
-    for X, y in data_iter(batch_size, features, labels):
-        with autograd.record():
-            l = loss(net(X, w, b), y)
-
-        l.backward()
-        sgd([w, b], lr, batch_size)
+def soft_max(X):
+    X_exp = X.exp()
+    parition = X_exp.sum(axis=1, keepdims=True)
+    return X_exp / parition
 
 
-    train_l = loss(net(features, w, b), labels)
-    print('eopch %d, loss %f' % (epoch + 1, train_l.mean().asnumpy()))
-#
-print(true_w, w)
-print(true_b, b)
+def net(X):
+    return soft_max(nd.dot(X.reshape((-1, num_inputs)), W) + b)
+
+
+def cross_entropy(y_hat, y):
+    return -nd.pick(y_hat, y).log()
+
+
+def accuracy(y_hat, y):
+    return (y_hat.argmax(axis=1) == y.astype('float32')).mean().asscalar()
+
+
+def evaluate_accuracy(data_iter, net):
+    acc_sum, n = 0.0, 0
+    for X, y in data_iter:
+        y = y.astype('float32')
+        acc_sum +=(net(X).argmax(axis=1) == y).sum().asscalar()
+        n+=y.size
+        return acc_sum/n
+
+num_epochs, lr = 1, 0.1
+
+def train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size, params=None, lr=None, trainer=None):
+    """Train and evaluate a model with CPU."""
+    for epoch in range(num_epochs):
+        train_l_sum, train_acc_sum, n = 0.0, 0.0, 0
+        for X, y in train_iter:
+            with autograd.record():
+                y_hat = net(X)
+                l = loss(y_hat, y).sum()
+            l.backward()
+            if trainer is None:
+                d2l.sgd(params, lr, batch_size)
+            else:
+                trainer.step(batch_size)
+            y = y.astype('float32')
+            train_l_sum += l.asscalar()
+            train_acc_sum += (y_hat.argmax(axis=1) == y).sum().asscalar()
+            n += y.size
+        test_acc = evaluate_accuracy(test_iter, net)
+        print('epoch %d, loss %.4f, train acc %.3f, test acc %.3f'
+              % (epoch + 1, train_l_sum / n, train_acc_sum / n, test_acc))
+        print('loss:', train_l_sum/n)
+
+
+train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, batch_size, [W, b], lr)
+d2l.train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, batch_size, [W, b], lr)
+

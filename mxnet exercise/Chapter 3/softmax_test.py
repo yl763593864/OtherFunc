@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2019/11/9 20:53
+# @Time    : 2019/11/11 0:11
 # @Author  : tys
 # @Email   : yangsongtang@gmail.com
-# @File    : test_3.py
+# @File    : softmax_test.py
 # @Software: PyCharm
+
 
 import d2lzh as d2l
 from mxnet import gluon, init

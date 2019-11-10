@@ -1,39 +1,15 @@
-from mxnet import nd, autograd
-from mxnet.gluon import data as gdata
-from mxnet.gluon import nn
-from mxnet import init
-from mxnet.gluon import loss as gloss
-from mxnet import gluon
+from mxnet import nd
 
-num_inputs = 2
-num_examples = 1000
-true_w = [2, -3.4]
-true_b = 4.2
-features = nd.random.normal(scale=1, shape=(num_examples, num_inputs))
-labels = true_w[0] * features[:, 0] + true_w[1] * features[:, 1] + true_b
-labels += nd.random.normal(scale=0.01, shape=labels.shape)
+# X = nd.array([[1, 2, 3],
+#               [4, 5, 6]])
+#
+# print(X.exp())
+# print(X.exp().sum(axis=1))
+# print((X.exp()).sum(axis=1, keepdims=True))
+# print(X.exp() / ((X.exp()).sum(axis=1, keepdims=True)))
 
-batch_size = 10
-data_set = gdata.ArrayDataset(features, labels)
-data_iter = gdata.DataLoader(data_set, batch_size, shuffle=True)
-
-net = nn.Sequential()
-net.add(nn.Dense(1))
-net.initialize(init.Normal(sigma=0.01))
-loss = gloss.L2Loss()
-
-trainer = gluon.Trainer(net.collect_params(), 'sgd', {'learning_rate': 0.03})
-
-num_epochs = 3
-for epoch in range(num_epochs):
-    for X, y in data_iter:
-        with autograd.record():
-            l = loss(net(X), y).mean()
-        l.backward()
-        trainer.step(1)
-    print('eopch %d, loss %f' % (epoch + 1, l.mean().asnumpy()))
-
-
-dense = net[0]
-print(true_w, dense.weight.data())
-print(true_b, dense.bias.data())
+y_hat = nd.array([[0.1, 0.3, 0.6], [0.2, 0.3, 0.5]])
+y = nd.array([0, 0])
+print(nd.pick(y_hat, y).log())
+x = nd.array([2.71828, 100])
+print(x.log())
