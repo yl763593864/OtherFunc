@@ -1,5 +1,14 @@
 from mxnet import nd
 from distutils.core import setup
+import autopy3 as autopy
+
+def hello_the_world():
+    autopy.alert.alert('Hello, World')
+
+# hello_the_world()
+
+autopy.mouse.smooth_move(50, 50)
+
 
 # X = nd.array([[1, 2, 3],
 #               [4, 5, 6]])

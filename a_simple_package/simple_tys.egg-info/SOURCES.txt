@@ -1,0 +1,7 @@
+setup.py
+example_pkg/__init__.py
+example_pkg/test.py
+simple_tys.egg-info/PKG-INFO
+simple_tys.egg-info/SOURCES.txt
+simple_tys.egg-info/dependency_links.txt
+simple_tys.egg-info/top_level.txt
