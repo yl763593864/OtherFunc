@@ -118,8 +118,18 @@ def update_word(word, new_word=None, new_sentence=None, new_similar=None,
 
 
 
+def find_sentence(word):
+    s = {}
+    s['word'] = word
+    my_words = words_col.find(s)
+    new_sentence = []
+    for w in my_words:
+        # print('word:\t', w['word'])
+        # for sentence in w['sentence']:
+        #     new_sentence.append(sentence)
+        print(w)
 
-
+    return new_sentence
 
 
 
@@ -134,6 +144,6 @@ def update_word(word, new_word=None, new_sentence=None, new_similar=None,
 # find_word('reserve')
 
 # random_word()
-find_word('tendency')
+find_word('presumably')
 
 
