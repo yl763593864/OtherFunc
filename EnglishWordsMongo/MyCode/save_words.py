@@ -133,10 +133,10 @@ def find_sentence(word):
 
 
 
-# read_words()
-#
-# for word in word_list:
-#     save_words(word.word, word.get_sql_string())
+read_words()
+
+for word in word_list:
+    save_words(word.word, word.get_sql_string())
 
 #
 # new_change = ['revenge']
@@ -144,6 +144,6 @@ def find_sentence(word):
 # find_word('reserve')
 
 # random_word()
-find_word('presumably')
+find_word('guard')
 
 
